@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  database:
+    container_name: orders-database-dev-ctnr
+    image: infuse/orders-database-dev:latest
+    build:
+      context: .
+      dockerfile: ./infra/docker/database/Dockerfile
+      args:
+        - MYSQL_DATABASE=${MYSQL_DATABASE}
+    env_file:
+      - ./infra/docker/database/.database.env
+    ports:
+      - 3306:3306
+    volumes:
+      - orders_db_data:/var/lib/mysql
+    networks:
+      - orders-network-dev
+
+  app:
+    container_name: orders-app-dev-ctnr
+    image: infuse/orders-app-dev:latest
+    build:
+      context: .
+      dockerfile: ./infra/docker/app/Dockerfile
+    env_file:
+      - ./infra/docker/app/.app.env
+    ports:
+      - 8080:8080
+    networks:
+      - orders-network-dev
+
+volumes:
+  orders_db_data:
+
+networks:
+  orders-network-dev:
+    driver: bridge
