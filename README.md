@@ -1,6 +1,17 @@
 # InfuseTech - Orders Web Service
 
-Avaliação técnica para a posição de engenheiro de software na [Infuse Tecnologia Ltda](https://www.infuse.srv.br/).
+Avaliação técnica para a posição de engenheiro de software na [Infuse Tecnologia Ltda](https://www.infuse.srv.br/). Web service que provê uma API RESTful para manipulação de dados básicos de pedidos.
+
+## TOC
+
+<!-- TOC -->
+
+- [InfuseTech - Orders Web Service](#infusetech---orders-web-service)
+  - [TOC](#toc)
+  - [Topologia do Projeto [WiP]](#topologia-do-projeto-wip)
+  - [Manipulação do projeto](#manipula%C3%A7%C3%A3o-do-projeto)
+
+<!-- /TOC -->
 
 ## Topologia do Projeto [WiP]
 
