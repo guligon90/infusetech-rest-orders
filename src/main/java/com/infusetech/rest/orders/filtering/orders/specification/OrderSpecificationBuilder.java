@@ -28,7 +28,7 @@ public class OrderSpecificationBuilder {
         return this;
     }
 
-    public Specification<com.infusetech.rest.orders.models.Order> build() {
+    public Specification<Order> build() {
         if(params.size() == 0) return null;
 
         Specification<Order> result = new OrderSpecification(params.get(0));
