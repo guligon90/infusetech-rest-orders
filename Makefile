@@ -54,10 +54,10 @@ info: header
 
 define HEADER
 +------------------------------------------------------------------------------------------------+
-   ____     ___           ______        __           ____         __              _      ______
-  /  _/__  / _/_ _____ __/_  __/__ ____/ /    ____  / __ \_______/ /__ _______   | | /| / / __/
- _/ // _ \/ _/ // (_-</ -_) / / -_) __/ _ \  /___/ / /_/ / __/ _  / -_) __(_-<   | |/ |/ /\ \
-/___/_//_/_/ \_,_/___/\__/_/  \__/\__/_//_/        \____/_/  \_,_/\__/_/ /___/   |__/|__/___/
+   ____     ___           ______        __           _      ______  ___         ___    __       
+  /  _/__  / _/_ _____ __/_  __/__ ____/ /    ____  | | /| / / __/ / _ \___ ___/ (_)__/ /__  ___
+ _/ // _ \/ _/ // (_-</ -_) / / -_) __/ _ \  /___/  | |/ |/ /\ \  / ___/ -_) _  / / _  / _ \(_-<
+/___/_//_/_/ \_,_/___/\__/_/  \__/\__/_//_/         |__/|__/___/ /_/   \__/\_,_/_/\_,_/\___/___/
 +------------------------------------------------------------------------------------------------+
 endef
 export HEADER
@@ -71,7 +71,7 @@ build: ## Realiza a build de todas as imagens Docker, ou para um c=<node de serv
 	@$(COMPOSE_FILE_CMD) build $(c)
 
 confirm:
-	@( read -p "$(RED)Are you sure? [y/N]$(RESET): " sure && case "$$sure" in [yY]) true;; *) false;; esac )
+	@( read -p "$(RED)Tem certeza? [y/N]$(RESET): " sure && case "$$sure" in [sSyY]) true;; *) false;; esac )
 
 clean: confirm ## Realiza a limpeza de todos os dados associados aos conteineres
 	@$(COMPOSE_FILE_CMD) down
@@ -112,5 +112,5 @@ enter: ## Executa um prompt de comando dentro de um container, dado um c=<nome d
 
 ps: status ## Alias do comando 'status'
 
-topology: ## Gera um diagrama dos serviços listados em docker-compose-dev.yml
+topology: ## Gera um diagrama dos serviços listados no arquivo YML do Docker Compose
 	@./scripts/sh/generate-diagrams.sh topology
