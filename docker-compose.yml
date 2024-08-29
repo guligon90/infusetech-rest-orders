@@ -28,6 +28,8 @@ services:
       - ./infra/docker/app/.app.env
     ports:
       - 8080:8080
+    depends_on:
+      - database
     networks:
       - orders-network-dev
 
