@@ -1,6 +1,6 @@
 package com.infusetech.rest.orders.models;
 
-import java.sql.Date;
+import java.time.LocalDate;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -8,15 +8,15 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 
-@Entity
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+
 @Table(name = Order.TABLE_NAME)
+@Entity
+@AllArgsConstructor
+@NoArgsConstructor
 public class Order {
-    public interface CreateOrder {}
-    public interface UpdateOrder {}
-
     public static final String TABLE_NAME = "pedido";
 
     @Id
@@ -34,27 +34,13 @@ public class Order {
     private int quantidade;
 
     @Column(name = "nome", length = 100, nullable = false)
-    @NotNull(groups = { CreateOrder.class, UpdateOrder.class })
-    @NotEmpty(groups = { CreateOrder.class, UpdateOrder.class })
     private String nome;
 
-    @Column(name = "data_cadastro", length = 100, nullable = false)
-    @NotNull(groups = { CreateOrder.class, UpdateOrder.class })
-    @NotEmpty(groups = { CreateOrder.class, UpdateOrder.class })
-    private Date dataCadastro;
+    @Column(name = "data_cadastro", nullable = false)
+    private LocalDate dataCadastro;
 
-    public Order() {
-    }
-
-    public Order(Long id, Long codigoCliente, Long numeroControle, int quantidade, String nome, Date dataCadastro) {
-        this.id = id;
-        this.codigoCliente = codigoCliente;
-        this.numeroControle = numeroControle;
-        this.quantidade = quantidade;
-        this.nome = nome;
-        this.dataCadastro = dataCadastro;
-    }   
-
+    @Column(name = "valor", precision = 2)
+    private double valor;
 
     public Long getId() {
         return this.id;
@@ -96,11 +82,19 @@ public class Order {
         this.nome = nome;
     }
 
-    public Date getDataCadastro() {
+    public LocalDate getDataCadastro() {
         return this.dataCadastro;
     }
 
-    public void setDataCadastro(Date dataCadastro) {
+    public void setDataCadastro(LocalDate dataCadastro) {
         this.dataCadastro = dataCadastro;
+    }
+
+    public double getValor() {
+        return this.valor;
+    }
+
+    public void setValor(double valor) {
+        this.valor = valor;
     }
 }
