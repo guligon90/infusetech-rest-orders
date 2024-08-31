@@ -1,0 +1,148 @@
+{
+	"info": {
+		"_postman_id": "673e95b7-cfa9-4bdb-8517-a0954db669b6",
+		"name": "ta-infusetech-api-pedidos",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "4999130"
+	},
+	"item": [
+		{
+			"name": "busca-pedidos",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"dataOption\": \"all\",\n    \"searchCriteriaList\": [\n        {\n            \"filterKey\": \"nome\",\n            \"operation\": \"cn\",\n            \"value\": \"P\"\n        },\n        {\n            \"filterKey\": \"valor\",\n            \"operation\": \"ge\",\n            \"value\": 100.00\n        },\n        {\n            \"filterKey\": \"valor\",\n            \"operation\": \"le\",\n            \"value\": 600.00\n        }\n    ],\n    \"searchSortingCriteriaList\": [\n        {\n            \"filterKey\": \"valor\",\n            \"ascending\": false\n        },\n        {\n            \"filterKey\": \"quantidade\",\n            \"ascending\": true\n        }\n    ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/order/search",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"order",
+						"search"
+					],
+					"query": [
+						{
+							"key": "pageNum",
+							"value": "1",
+							"disabled": true
+						},
+						{
+							"key": "pageSize",
+							"value": "3",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "detalhes-pedido",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/order/11",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"order",
+						"11"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "remove-pedido",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/order/6",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"order",
+						"6"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "atualiza-pedido",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"nome\": \"livro\",\n    \"codigoCliente\": 101112,\n    \"quantidade\": 23\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/order/11",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"order",
+						"11"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "cria-pedido",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"nome\": \"Ferramentas\",\n    \"numeroControle\": 9119169,\n    \"codigoCliente\": 101112,\n    \"quantidade\": -13,\n    \"valor\": 1023.42\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/order",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"order"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
