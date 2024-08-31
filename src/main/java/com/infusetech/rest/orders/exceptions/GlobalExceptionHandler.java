@@ -1,5 +1,6 @@
 package com.infusetech.rest.orders.exceptions;
 
+import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -26,6 +27,13 @@ import lombok.extern.slf4j.Slf4j;
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @Value("${server.error.include-exception}")
     private boolean printStackTrace;
+
+    private void logError(String message, Throwable error) {
+        if (printStackTrace)
+            log.error(message, error);
+        else
+            log.error(message);
+    }
 
     @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
     protected ResponseEntity<Object> handleMethodArgumentNotValid(
@@ -54,7 +62,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     ) {
         final String errorMessage = "Ocorreu um erro desconhecido";
 
-        log.error(errorMessage, exception);
+        logError(errorMessage, exception);
 
         return buildErrorResponse(
             exception,
@@ -72,7 +80,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     ) {
         String errorMessage = dataIntegrityViolationException.getMostSpecificCause().getMessage();
 
-        log.error("Falha ao salvar entidade com problemas de integridade: " + errorMessage, dataIntegrityViolationException);
+        logError("Falha ao salvar entidade com problemas de integridade: " + errorMessage, dataIntegrityViolationException);
 
         return buildErrorResponse(
             dataIntegrityViolationException,
@@ -88,13 +96,16 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         ConstraintViolationException constraintViolationException,
         WebRequest request
     ) {
-        log.error("Falha ao validar elemento", constraintViolationException);
-
-        return buildErrorResponse(
-            constraintViolationException,
-            HttpStatus.UNPROCESSABLE_ENTITY,
-            request
+        ErrorResponse errorResponse = new ErrorResponse(
+            HttpStatus.UNPROCESSABLE_ENTITY.value(),
+            "Erro de validação. Verifique o campo 'errors' para maiores detalhes."
         );
+
+        for (ConstraintViolation<?> fieldError : constraintViolationException.getConstraintViolations()) {
+            errorResponse.addValidationError(fieldError.getPropertyPath().toString(), fieldError.getMessage());
+        }
+
+        return ResponseEntity.unprocessableEntity().body(errorResponse);
     }
 
     @ExceptionHandler(ObjectNotFoundException.class)
@@ -103,7 +114,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         ObjectNotFoundException objectNotFoundException,
         WebRequest request
     ) {
-        log.error("Falha ao encontrar objeto requerido", objectNotFoundException);
+        logError("Falha ao encontrar objeto requerido", objectNotFoundException);
 
         return buildErrorResponse(
             objectNotFoundException,
@@ -118,7 +129,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         DataBindingViolationException dataBindingViolationException,
         WebRequest request
     ) {
-        log.error("Falha ao persistir entidade com dados associados", dataBindingViolationException);
+        logError("Falha ao persistir entidade com dados associados", dataBindingViolationException);
 
         return buildErrorResponse(
             dataBindingViolationException,
