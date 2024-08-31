@@ -2,8 +2,7 @@ package com.infusetech.rest.orders.models.dto;
 
 import java.time.LocalDate;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,20 +12,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class OrderDTO {
-    @NotBlank
-    @Size(min = 10, max = 100)
+    private Long id;
     private String nome;
-
-    @NotBlank
     private String codigoCliente;
-
-    @NotBlank
-    private Long numeroControle;
-    
-    @NotBlank
+    private LocalDate dataCadastro;    
+    private int quantidade;
     private double valor;
-    
-    private LocalDate dataCadastro = LocalDate.now();
 
-    private int quantidade = 1;    
+    @JsonFormat(pattern = "dd-MM-yyyy")
+    private Long numeroControle;
 }
