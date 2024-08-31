@@ -13,5 +13,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class OrderSearchDTO {
     private List<SearchCriteria> searchCriteriaList;
+    private List<OrderSearchSortingDTO> searchSortingCriteriaList;
     private String dataOption;
 }
