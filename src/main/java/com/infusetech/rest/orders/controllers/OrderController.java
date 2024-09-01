@@ -1,8 +1,10 @@
 package com.infusetech.rest.orders.controllers;
 
 import java.util.List;
+
 import jakarta.validation.Valid;
 
+import org.springframework.http.MediaType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -28,7 +30,7 @@ import com.infusetech.rest.orders.common.filters.SearchCriteria;
 import com.infusetech.rest.orders.filtering.orders.dto.OrderSearchDTO;
 import com.infusetech.rest.orders.filtering.orders.dto.OrderSearchSortingDTO;
 import com.infusetech.rest.orders.filtering.orders.specification.OrderSpecificationBuilder;
-import com.infusetech.rest.orders.models.Order;
+import com.infusetech.rest.orders.models.dto.OrderCreateBulkDTO;
 import com.infusetech.rest.orders.models.dto.OrderCreateDTO;
 import com.infusetech.rest.orders.models.dto.OrderDTO;
 import com.infusetech.rest.orders.models.dto.OrderUpdateDTO;
@@ -46,6 +48,7 @@ public class OrderController {
     }
 
     private static Sort buildSortingCriteria(List<OrderSearchSortingDTO> sortingCriteriaList) {
+        // Incializa ordernador como os critérios do primeiro campo
         Sort sortingCriteria = Sort.by(sortingCriteriaList.get(0).getFilterKey());
 
         if (sortingCriteriaList.get(0).getAscending())
@@ -53,6 +56,7 @@ public class OrderController {
         else
             sortingCriteria.descending();
 
+        // Aplica critérios de ordenação para os campos restantes
         for (int i = 1; i < sortingCriteriaList.size(); i++) {
             OrderSearchSortingDTO criteria = sortingCriteriaList.get(i);
 
@@ -67,15 +71,15 @@ public class OrderController {
         return sortingCriteria;
     }
 
-    private Pageable buildPaginatedResponse(
+    private Pageable buildPageRequest(
         OrderSearchDTO orderSearchDTO,
-        OrderSpecificationBuilder builder,
         int pageNum,
         int pageSize
     ) {
         List<OrderSearchSortingDTO> sortingCriteriaList = orderSearchDTO.getSearchSortingCriteriaList();
         Sort defaultSorter = Sort.by("id").ascending();
 
+        // Tratamento caso não sejam informados critérios de ordenação no body
         Sort sorter = sortingCriteriaList != null
             ? (
                 sortingCriteriaList.size() > 0
@@ -84,9 +88,7 @@ public class OrderController {
             )
             : defaultSorter;
 
-        Pageable page = PageRequest.of(pageNum, pageSize, sorter);
-
-        return page;
+        return PageRequest.of(pageNum, pageSize, sorter);
     }
 
     @GetMapping("/{id}")
@@ -114,8 +116,8 @@ public class OrderController {
             );
     }
 
-    @PostMapping(path = "/search")
-    public ResponseEntity<ApiResponse<List<Order>>> searchOrders(
+    @PostMapping("/search")
+    public ResponseEntity<ApiResponse<List<OrderDTO>>> searchOrders(
         @RequestParam(name = "pageNum", defaultValue = "0") int pageNum,
         @RequestParam(name = "pageSize", defaultValue = "10") int pageSize,
         @Valid @RequestBody OrderSearchDTO orderSearchDTO
@@ -130,11 +132,11 @@ public class OrderController {
             });
         }
 
-        Pageable page = buildPaginatedResponse(orderSearchDTO, builder, pageNum, pageSize);
-        Page<Order> orderPage = orderService.findBySearchCriteria(builder.build(), page);
+        Pageable pageRequest = buildPageRequest(orderSearchDTO, pageNum, pageSize);
+        Page<OrderDTO> orderPage = orderService.findBySearchCriteria(builder.build(), pageRequest);
 
         return OrderController
-            .<List<Order>>getResponseBuilder()
+            .<List<OrderDTO>>getResponseBuilder()
             .buildResponse(
                 HttpStatus.OK.value(),
                 "Resultados da busca por pedidos",
@@ -161,7 +163,7 @@ public class OrderController {
         return OrderController
             .getResponseBuilder()
             .buildResponse(
-                HttpStatus.OK.value(),
+                HttpStatus.CREATED.value(),
                 "Pedido criado",
                 created
             );
@@ -190,6 +192,28 @@ public class OrderController {
                 HttpStatus.OK.value(),
                 "Pedido atualizado",
                 updated
+            );
+    }
+
+    @PostMapping(
+        path = "bulk",
+        consumes = {
+            MediaType.APPLICATION_XML_VALUE,
+            MediaType.APPLICATION_JSON_VALUE,
+            MediaType.TEXT_XML_VALUE
+        }
+    )
+    public ResponseEntity<ApiResponse<List<OrderDTO>>> bulkCreate(
+        @RequestBody OrderCreateBulkDTO payload
+    ) {
+        List<OrderDTO> createdOrders = orderService.createOrdersInBulk(payload);
+
+        return OrderController
+            .<List<OrderDTO>>getResponseBuilder()
+            .buildResponse(
+                HttpStatus.CREATED.value(),
+                "Pedidos criados",
+                createdOrders
             );
     }
 }
