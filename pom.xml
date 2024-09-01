@@ -12,7 +12,7 @@
 	<artifactId>orders</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>orders</name>
-	
+
 	<description>
 		Web service that provides a RESTful API, handling I/O for order-related data.
 	</description>
@@ -22,9 +22,20 @@
 	</properties>
 
 	<packaging>jar</packaging>
-	
-	<build>	
+
+	<build>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
 		<plugins>
+			<plugin>
+				<groupId>org.springdoc</groupId>
+				<artifactId>springdoc-openapi-maven-plugin</artifactId>
+				<version>1.4</version>
+			</plugin>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
@@ -39,9 +50,9 @@
 					</execution>
 				</executions>
 			</plugin>
-		</plugins>						
+		</plugins>
 	</build>
-	
+
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -119,6 +130,11 @@
 			<artifactId>junit-jupiter-params</artifactId>
 			<version>5.11.0</version>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+			<version>2.6.0</version>
 		</dependency>
 	</dependencies>
 </project>
