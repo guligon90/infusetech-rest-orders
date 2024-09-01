@@ -107,9 +107,6 @@ up: ## Inicia todos os conteineres em modo "attached" ou apenas um c=<nome de se
 run: ## Run cmdcommand or entrypoint for a c=<name> container
 	@$(COMPOSE_FILE_CMD) run --rm $(c) $(cmd)
 
-run-locally:
-	@./scripts/sh/run-ws.sh locally
-
 enter: ## Executa um prompt de comando dentro de um container, dado um c=<nome de serviço> e um b=<path> caminho para o prompt, e.g. /bin/bash
 	@$(COMPOSE_FILE_CMD) exec -it $(c) $(b)
 
@@ -117,3 +114,6 @@ ps: status ## Alias do comando 'status'
 
 topology: ## Gera um diagrama dos serviços listados no arquivo YML do Docker Compose
 	@./scripts/sh/generate-diagrams.sh topology
+
+run-locally:
+	@./scripts/sh/run-ws.sh locally
