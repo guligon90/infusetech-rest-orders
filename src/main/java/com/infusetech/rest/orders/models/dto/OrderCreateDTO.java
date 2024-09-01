@@ -7,9 +7,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.PositiveOrZero;
+import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
-
 import lombok.Data;
 
 @Data
@@ -24,11 +23,10 @@ public class OrderCreateDTO {
     @NotNull
     private Long codigoCliente;    
     
-    @PositiveOrZero
+    @Positive
     private double valor;
 
     private int quantidade = 1;    
-
     private LocalDate dataCadastro = LocalDate.now();
 
     @AssertTrue(message = "Quantidade deve ser um inteiro positivo")

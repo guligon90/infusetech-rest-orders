@@ -17,13 +17,13 @@ public class OrderUpdateDTO {
     private Long numeroControle;
     private Long codigoCliente;
     private LocalDate dataCadastro;
-    private double valor = -1.0;
-    private int quantidade = -1;
+    private double valor = 0;
+    private int quantidade = 0;
 
-    @AssertTrue(message = "Quantidade deve ser um inteiro positivo")
+    @AssertTrue(message = "Quantidade deve ser um inteiro positivo ou zero")
     @JsonIgnore
-    public boolean isQuantidadePositive() {
-        return quantidade > 0;
+    public boolean isQuantidadePositiveOrZero() {
+        return quantidade >= 0;
     }
 
     @AssertTrue(message = "Valor deve ser positivo ou zero")

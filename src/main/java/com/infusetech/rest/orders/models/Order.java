@@ -2,6 +2,8 @@ package com.infusetech.rest.orders.models;
 
 import java.time.LocalDate;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -39,6 +41,7 @@ public class Order {
     private String nome;
 
     @Column(name = "data_cadastro", nullable = false)
+    @JsonFormat(pattern = "dd-MM-yyyy")
     private LocalDate dataCadastro;
 
     @Column(name = "valor", precision = 2)

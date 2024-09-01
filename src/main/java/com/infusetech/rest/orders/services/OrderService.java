@@ -8,9 +8,11 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 
 import com.infusetech.rest.orders.common.mappers.ModelDtoMapper;
 import com.infusetech.rest.orders.models.Order;
+import com.infusetech.rest.orders.models.dto.OrderCreateBulkDTO;
 import com.infusetech.rest.orders.models.dto.OrderCreateDTO;
 import com.infusetech.rest.orders.models.dto.OrderDTO;
 import com.infusetech.rest.orders.models.dto.OrderUpdateDTO;
@@ -18,12 +20,14 @@ import com.infusetech.rest.orders.repositories.OrderRepository;
 import com.infusetech.rest.orders.services.exceptions.DataBindingViolationException;
 import com.infusetech.rest.orders.services.exceptions.ObjectNotFoundException;
 
+import jakarta.validation.ValidationException;
+
 @Service
 public class OrderService {
     @Autowired
     private OrderRepository orderRepository;
 
-    private double applyDiscount(double value, int quantity) {
+    private static double applyDiscount(double value, int quantity) {
         // Desconto de 5%
         if (5 < quantity && quantity < 10) return value * 0.95;
 
@@ -44,10 +48,6 @@ public class OrderService {
         }
     }
 
-    public List<Order> findAll(){
-        return orderRepository.findAll();
-    }
-
     public OrderDTO findById(Long id) {
         Optional<Order> result = this.orderRepository.findById(id);
 
@@ -57,46 +57,88 @@ public class OrderService {
         return ModelDtoMapper.<Order, OrderDTO>getDTO(order, OrderDTO.class);
     }
 
-    public Page<Order> findBySearchCriteria(Specification<Order> spec, Pageable page){
-        Page<Order> searchResult = this.orderRepository.findAll(spec, page);
+    public Page<OrderDTO> findBySearchCriteria(Specification<Order> specification, Pageable pageRequest){
+        List<OrderDTO> results = this.orderRepository.findAll(specification)
+            .stream()
+            .map(item -> ModelDtoMapper
+                .<Order, OrderDTO>getDTO(
+                    item,
+                    OrderDTO.class
+                )
+            ).toList();
 
-        return searchResult;
+        int start = (int) pageRequest.getOffset();
+        int end = Math.min((start + pageRequest.getPageSize()), results.size());
+
+        List<OrderDTO> pageContent = results.subList(start, end);
+
+        return new PageImpl<>(pageContent, pageRequest, results.size());
     }
-
 
     public OrderDTO create(OrderCreateDTO payload) {
         Order toBeCreated = ModelDtoMapper.<Order, OrderCreateDTO>getModel(payload, Order.class);
         double value = toBeCreated.getValor();
         int quantity = payload.getQuantidade();
 
-        toBeCreated.setValor(applyDiscount(value, quantity));
+        if (value > 0)
+            toBeCreated.setValor(OrderService.applyDiscount(value, quantity));
 
-        Order created = orderRepository.saveAndFlush(toBeCreated);
-
-        return ModelDtoMapper.<Order, OrderDTO>getDTO(created, OrderDTO.class);
+        return ModelDtoMapper
+            .<Order, OrderDTO>getDTO(
+                orderRepository.saveAndFlush(toBeCreated),
+                OrderDTO.class
+            );
     }
 
     public OrderDTO update(Long id, OrderUpdateDTO payload) {
         Order fetchedOrder = ModelDtoMapper.<Order, OrderDTO>getModel(findById(id), Order.class);
 
-        if (payload.getQuantidade() == -1.0) {
+        if (payload.getQuantidade() == 0) {
             payload.setQuantidade(fetchedOrder.getQuantidade());
         }
 
-        if (payload.getValor() == -1) {
+        if (payload.getValor() == 0) {
             payload.setValor(fetchedOrder.getValor());
         }
 
-        // Aplica desconto somente se houver alteração na quantidade ou no valor
-        boolean toBeDiscounted = (payload.getQuantidade() != fetchedOrder.getQuantidade())
-            || (payload.getValor() != fetchedOrder.getValor());
+        Double value = payload.getValor();
+        int quantity = payload.getQuantidade();
 
-        if (toBeDiscounted)
-            payload.setValor(applyDiscount(payload.getValor(), payload.getQuantidade()));
+        // Aplica desconto somente...
+        boolean toBeDiscounted = (
+            (quantity != fetchedOrder.getQuantidade()) || // ...se houver alteração na quantidade
+            (value != fetchedOrder.getValor()) // ...ou no valor
+        ) && value > 0; // ...e se o valor for positivo
 
-        Order toBeUpdated = ModelDtoMapper.<Order, OrderUpdateDTO>updateModelWithDTOData(fetchedOrder, payload, Order.class);
-        Order updated = orderRepository.saveAndFlush(toBeUpdated);
+        if (toBeDiscounted) {
+            Double discount = OrderService.applyDiscount(value, quantity);
+            payload.setValor(discount);
+        }
 
-        return ModelDtoMapper.<Order, OrderDTO>getDTO(updated, OrderDTO.class);
+        Order toBeUpdated = ModelDtoMapper
+            .<Order, OrderUpdateDTO>updateModelWithDTOData(
+                fetchedOrder, payload,
+                Order.class
+            );
+
+        return ModelDtoMapper
+            .<Order, OrderDTO>getDTO(
+                orderRepository.saveAndFlush(toBeUpdated),
+                OrderDTO.class
+            );
+    }
+
+    public List<OrderDTO> createOrdersInBulk(OrderCreateBulkDTO payload) {
+        List<OrderCreateDTO> orders = payload.getPedidos();
+
+        if (payload.isPedidosListSizeOutOfRange()) {
+            throw new ValidationException("A lista de pedidos deve possuir entre " +
+                OrderCreateBulkDTO.LISTA_PEDIDOS_MIN_SIZE + " e " +
+                OrderCreateBulkDTO.LISTA_PEDIDOS_MAX_SIZE + " elementos"
+            );
+        }
+
+        // TODO; introduzir validação e concorrência para muitos registros
+        return orders.stream().map(order -> create(order)).toList();
     }
 }
