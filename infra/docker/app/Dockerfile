@@ -9,7 +9,9 @@ WORKDIR ${WORKDIR}
 COPY ./src ${WORKDIR}/src
 COPY ./pom.xml ${WORKDIR}/pom.xml
 
-RUN mvn clean package -Dmaven.test.skip
+RUN mvn clean install \
+    -Dmaven.test.skip \
+    -DskipTests
 
 # +---------------------+
 # | JAR execution stage |
