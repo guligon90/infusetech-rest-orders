@@ -10,8 +10,8 @@ import lombok.NoArgsConstructor;
 public class SearchCriteria {
     private String filterKey;
     private Object value;
-    private String operation;
     private String dataOption;
+    private String operation;
 
     public SearchCriteria(String filterKey, String operation, Object value) {
         super();

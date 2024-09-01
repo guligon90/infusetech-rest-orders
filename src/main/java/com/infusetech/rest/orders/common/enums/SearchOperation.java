@@ -1,65 +1,48 @@
 package com.infusetech.rest.orders.common.enums;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+
 public enum SearchOperation {
-    CONTAINS,
-    DOES_NOT_CONTAIN,
-    EQUAL,
-    NOT_EQUAL,
-    BEGINS_WITH,
-    DOES_NOT_BEGIN_WITH,
-    ENDS_WITH,
-    DOES_NOT_END_WITH,
-    NUL,
-    NOT_NULL,
-    GREATER_THAN,
-    GREATER_THAN_EQUAL,
-    LESS_THAN,
-    LESS_THAN_EQUAL,
-    ANY,
-    ALL;
+    CONTAINS("cn"),
+    DOES_NOT_CONTAIN("nc"),
+    EQUAL("eq"),
+    NOT_EQUAL("ne"),
+    BEGINS_WITH("bw"),
+    DOES_NOT_BEGIN_WITH("bn"),
+    ENDS_WITH("ew"),
+    DOES_NOT_END_WITH("en"),
+    NUL("nu"),
+    NOT_NULL("nn"),
+    GREATER_THAN("gt"),
+    GREATER_THAN_EQUAL("ge"),
+    LESS_THAN("lt"),
+    LESS_THAN_EQUAL("le"),
+    ANY("all"),
+    ALL("any");
 
-    public static final String[] SIMPLE_OPERATION_SET = {
-        "cn",
-        "nc",
-        "eq",
-        "ne",
-        "bw",
-        "bn",
-        "ew",
-        "en",
-        "nu",
-        "nn",
-        "gt",
-        "ge",
-        "lt",
-        "le"
-    };
+    private final String operation;
 
-    public static SearchOperation getDataOption(final String dataOption){
-         switch(dataOption){
-            case "all": return ALL;
-            case "any": return ANY;
-            default: return null;
-        }
+    SearchOperation(String operation){
+        this.operation = operation;
     }
 
-    public static SearchOperation getSimpleOperation(final String input) {
-        switch (input){
-            case "cn": return CONTAINS;
-            case "nc": return DOES_NOT_CONTAIN;
-            case "eq": return EQUAL;
-            case "ne": return NOT_EQUAL;
-            case "bw": return BEGINS_WITH;
-            case "bn": return DOES_NOT_BEGIN_WITH;
-            case "ew": return ENDS_WITH;
-            case "en": return DOES_NOT_END_WITH;
-            case "nu": return NUL;
-            case "nn": return NOT_NULL;
-            case "gt": return GREATER_THAN;
-            case "ge": return GREATER_THAN_EQUAL;
-            case "lt": return LESS_THAN;
-            case "le": return LESS_THAN_EQUAL;
-            default: return null;
+    @JsonValue
+    public String getSearchOperation() {
+        return operation;
+    }
+
+    @JsonCreator
+    public static SearchOperation fromValue(String value) {
+        for (SearchOperation contact : values()) {
+            String currentOperation = contact.getSearchOperation();
+
+            if (currentOperation.equals(value)) {
+                return contact;
+            }
         }
+
+        // Retorna uma resposta com um status HTTP 400
+       throw new IllegalArgumentException("Operação de busca '" + value + " 'inválida");
     }
 }
