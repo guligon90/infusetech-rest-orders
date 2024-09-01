@@ -13,7 +13,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"dataOption\": \"all\",\n    \"searchCriteriaList\": [\n        {\n            \"filterKey\": \"nome\",\n            \"operation\": \"cn\",\n            \"value\": \"P\"\n        },\n        {\n            \"filterKey\": \"valor\",\n            \"operation\": \"ge\",\n            \"value\": 100.00\n        },\n        {\n            \"filterKey\": \"valor\",\n            \"operation\": \"le\",\n            \"value\": 600.00\n        }\n    ],\n    \"searchSortingCriteriaList\": [\n        {\n            \"filterKey\": \"valor\",\n            \"ascending\": false\n        },\n        {\n            \"filterKey\": \"quantidade\",\n            \"ascending\": true\n        }\n    ]\n}",
+					"raw": "{\n    \"dataOption\": \"all\",\n    \"searchCriteriaList\": [\n        {\n            \"filterKey\": \"nome\",\n            \"operation\": \"cn\",\n            \"value\": \"a\"\n        },\n        {\n            \"filterKey\": \"valor\",\n            \"operation\": \"ge\",\n            \"value\": 100.00\n        },\n        {\n            \"filterKey\": \"valor\",\n            \"operation\": \"le\",\n            \"value\": 600.00\n        }\n    ],\n    \"searchSortingCriteriaList\": [\n        {\n            \"filterKey\": \"valor\",\n            \"ascending\": false\n        },\n        {\n            \"filterKey\": \"quantidade\",\n            \"ascending\": true\n        }\n    ]\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -53,7 +53,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/order/11",
+					"raw": "http://localhost:8080/order/1",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -61,7 +61,7 @@
 					"port": "8080",
 					"path": [
 						"order",
-						"11"
+						"1"
 					]
 				}
 			},
@@ -102,7 +102,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/order/11",
+					"raw": "http://localhost:8080/order/1",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -110,7 +110,7 @@
 					"port": "8080",
 					"path": [
 						"order",
-						"11"
+						"1"
 					]
 				}
 			},
@@ -123,7 +123,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"nome\": \"Ferramentas\",\n    \"numeroControle\": 9119169,\n    \"codigoCliente\": 101112,\n    \"quantidade\": -13,\n    \"valor\": 1023.42\n}",
+					"raw": "{\n    \"nome\": \"Roupas\",\n    \"numeroControle\": 94945,\n    \"codigoCliente\": 101112,\n    \"valor\": 456.12\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -139,6 +139,64 @@
 					"port": "8080",
 					"path": [
 						"order"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "cria-pedidos-lote-xml",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<payload>\n    <pedidos>\n        <pedido>\n            <nome>Cestas básicas</nome>\n            <codigoCliente>101112</codigoCliente>\n            <numeroControle>296965</numeroControle>\n            <valor>300.00</valor>\n            <quantidade>5</quantidade>\n        </pedido>\n        <pedido>\n            <nome>Ferramentas pesadas</nome>\n            <codigoCliente>123456</codigoCliente>\n            <numeroControle>749494</numeroControle>\n            <valor>500.00</valor>\n            <quantidade>12</quantidade>\n            <dataCadastro>2022-10-04</dataCadastro>\n        </pedido>\n        <pedido>\n            <nome>Materiais de construção</nome>\n            <codigoCliente>123456</codigoCliente>\n            <numeroControle>269464</numeroControle>\n            <valor>450.00</valor>\n            <quantidade>7</quantidade>\n            <dataCadastro>2024-08-13</dataCadastro>\n        </pedido>\n    </pedidos>\n</payload>\n",
+					"options": {
+						"raw": {
+							"language": "xml"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/order/bulk",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"order",
+						"bulk"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "cria-pedidos-lote-json",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{    \n    \"pedidos\": [\n        {\n            \"nome\": \"Cestas básicas\",\n            \"codigoCliente\": 101112,\n            \"numeroControle\": 296965,\n            \"valor\": 300.00,\n            \"quantidade\": 5\n        },\n        {\n            \"nome\": \"Ferramentas pesadas\",\n            \"codigoCliente\": 123456,\n            \"numeroControle\": 749494,\n            \"valor\": 500.00,\n            \"quantidade\": 12,\n            \"dataCadastro\": \"2022-10-04\"\n        },\n        {\n            \"nome\": \"Materiais de construção\",\n            \"codigoCliente\": 123456,\n            \"numeroControle\": 269464,\n            \"valor\": 450.00,\n            \"quantidade\": 7,\n            \"dataCadastro\": \"2024-08-13\"\n        }\n    ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/order/bulk",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"order",
+						"bulk"
 					]
 				}
 			},
