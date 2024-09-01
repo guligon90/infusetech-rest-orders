@@ -36,7 +36,7 @@ public class OrderSpecificationBuilder {
         for (int idx = 1; idx < params.size(); idx++){
             SearchCriteria criteria = params.get(idx);
             
-            result = SearchOperation.getDataOption(criteria.getDataOption()) == SearchOperation.ALL
+            result = SearchOperation.fromValue(criteria.getDataOption()) == SearchOperation.ALL
                 ? Specification.where(result).and(new OrderSpecification(criteria))
                 : Specification.where(result).or(new OrderSpecification(criteria));
         }

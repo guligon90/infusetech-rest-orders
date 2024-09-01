@@ -25,7 +25,7 @@ public class OrderSpecification implements Specification<Order> {
 
         String strToSearch = searchCriteria.getValue().toString().toLowerCase();
 
-        switch(Objects.requireNonNull(SearchOperation.getSimpleOperation(searchCriteria.getOperation()))){
+        switch(Objects.requireNonNull(SearchOperation.fromValue(searchCriteria.getOperation()))){
             case CONTAINS:
                 if(searchCriteria.getFilterKey().equals("nome")){
                     return cb.like(cb.lower(root.get(searchCriteria.getFilterKey())), "%" + strToSearch + "%");

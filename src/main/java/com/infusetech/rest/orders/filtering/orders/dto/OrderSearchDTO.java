@@ -2,6 +2,7 @@ package com.infusetech.rest.orders.filtering.orders.dto;
 
 import java.util.List;
 
+import com.infusetech.rest.orders.common.enums.SearchOperation;
 import com.infusetech.rest.orders.common.filters.SearchCriteria;
 
 import lombok.Data;
@@ -15,4 +16,5 @@ public class OrderSearchDTO {
     private List<SearchCriteria> searchCriteriaList;
     private List<OrderSearchSortingDTO> searchSortingCriteriaList;
     private String dataOption;
+    private SearchOperation operation;
 }
