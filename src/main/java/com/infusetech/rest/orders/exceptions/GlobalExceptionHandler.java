@@ -2,6 +2,7 @@ package com.infusetech.rest.orders.exceptions;
 
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.ValidationException;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -159,5 +160,21 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         }
 
         return ResponseEntity.status(httpStatus).body(errorResponse);
+    }
+
+
+    @ExceptionHandler(ValidationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<Object> handleValidationException(
+        ValidationException validationException,
+        WebRequest request
+    ) {
+        logError("Erro de validação", validationException);
+
+        return buildErrorResponse(
+            validationException,
+            HttpStatus.BAD_REQUEST,
+            request
+        );
     }
 }
