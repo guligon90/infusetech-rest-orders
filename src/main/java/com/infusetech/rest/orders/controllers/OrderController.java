@@ -38,7 +38,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
-@RequestMapping("/order")
+@RequestMapping("/api/order")
 @Tag(name = "order", description = "API de pedidos")
 public class OrderController {
     @Autowired
