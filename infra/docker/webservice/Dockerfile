@@ -3,7 +3,7 @@
 # +---------------------+
 FROM maven:3-openjdk-17-slim as build
 
-ENV WORKDIR=/home/app 
+ENV WORKDIR=/home/webservice 
 WORKDIR ${WORKDIR}
 
 COPY ./src ${WORKDIR}/src
@@ -22,7 +22,7 @@ ENV APP_NAME=orders
 ENV VERSION=0.0.1-SNAPSHOT
 ENV ARTIFACT=${APP_NAME}-${VERSION}.jar
 
-ENV WORKDIR=/home/app 
+ENV WORKDIR=/home/webservice 
 WORKDIR ${WORKDIR}
 
 COPY --from=build ${WORKDIR}/target/${ARTIFACT} ./${ARTIFACT}
