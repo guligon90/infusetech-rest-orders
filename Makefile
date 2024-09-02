@@ -46,7 +46,9 @@ HELP_FUN = \
 	run \
 	enter \
 	ps \
-	topology
+	topology \
+	runws \
+	tests
 
 .DEFAULT_GOAL := help
 
@@ -115,5 +117,8 @@ ps: status ## Alias do comando 'status'
 topology: ## Gera um diagrama dos serviços listados no arquivo YML do Docker Compose
 	@./scripts/sh/generate-diagrams.sh topology
 
-run-locally:
-	@./scripts/sh/run-ws.sh locally
+runws: ## Realiza o empacotamento e execução do JAR, iniciando o web service localmente
+	@./scripts/sh/run-ws.sh service
+
+tests: ## Executa os testes unitários localmente
+	@./scripts/sh/run-ws.sh tests
