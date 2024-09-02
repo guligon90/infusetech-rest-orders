@@ -29,5 +29,5 @@ jobs:
         cache: maven
     - name: Build do projeto com Maven
       run: mvn --batch-mode package --file pom.xml -Dmaven.test.skip -DskipTests    
-    - name: Build with Maven
+    - name: Executa testes unitários
       run: mvn --batch-mode test
