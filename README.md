@@ -1,9 +1,10 @@
 # InfuseTech - Web Service de Pedidos
 
+![Code Analysis](https://github.com/guligon90/infusetech-rest-orders/actions/workflows/code-analysis.yml/badge.svg)
+
 Avaliação técnica para a posição de engenheiro de software na [Infuse Tecnologia Ltda](https://www.infuse.srv.br/). Web service que provê uma API RESTful para manipulação de dados básicos de pedidos.
 
 ## TOC
-
 <!-- TOC -->
 
 - [InfuseTech - Web Service de Pedidos](#infusetech---web-service-de-pedidos)
