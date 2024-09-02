@@ -2,11 +2,9 @@ name: WS Pedidos CI
 
 on:
   push:
-    # Run on to branches when a push is made to a feature branch
     branches:
       - "feature/*"
   pull_request:
-    # Run on to branches with an open PR
     branches:
       - "main"
 
