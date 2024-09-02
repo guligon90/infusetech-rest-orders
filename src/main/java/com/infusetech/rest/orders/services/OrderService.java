@@ -12,6 +12,8 @@ import org.springframework.data.domain.PageImpl;
 
 import com.infusetech.rest.orders.common.mappers.ModelDtoMapper;
 import com.infusetech.rest.orders.models.Order;
+import com.infusetech.rest.orders.models.dto.OrderBatchResponseDTO;
+import com.infusetech.rest.orders.models.dto.OrderBatchErrorsDTO;
 import com.infusetech.rest.orders.models.dto.OrderCreateBulkDTO;
 import com.infusetech.rest.orders.models.dto.OrderCreateDTO;
 import com.infusetech.rest.orders.models.dto.OrderDTO;
@@ -19,8 +21,7 @@ import com.infusetech.rest.orders.models.dto.OrderUpdateDTO;
 import com.infusetech.rest.orders.repositories.OrderRepository;
 import com.infusetech.rest.orders.services.exceptions.DataBindingViolationException;
 import com.infusetech.rest.orders.services.exceptions.ObjectNotFoundException;
-
-import jakarta.validation.ValidationException;
+import com.infusetech.rest.orders.services.validators.OrderServiceValidator;
 
 @Service
 public class OrderService {
@@ -128,17 +129,17 @@ public class OrderService {
             );
     }
 
-    public List<OrderDTO> createOrdersInBulk(OrderCreateBulkDTO payload) {
+    public OrderBatchResponseDTO createOrdersInBulk(OrderCreateBulkDTO payload) {
         List<OrderCreateDTO> orders = payload.getPedidos();
+        OrderBatchErrorsDTO errorReport = OrderServiceValidator.validateOrderBatch(payload);
 
-        if (payload.isPedidosListSizeOutOfRange()) {
-            throw new ValidationException("A lista de pedidos deve possuir entre " +
-                OrderCreateBulkDTO.LISTA_PEDIDOS_MIN_SIZE + " e " +
-                OrderCreateBulkDTO.LISTA_PEDIDOS_MAX_SIZE + " elementos"
-            );
-        }
+        if (errorReport != null)
+            return new OrderBatchResponseDTO.Builder().withErrors(errorReport).build();
 
-        // TODO; introduzir validação e concorrência para muitos registros
-        return orders.stream().map(order -> create(order)).toList();
+        return new OrderBatchResponseDTO.Builder()
+            .withOrders(orders.stream()
+                .map(order -> create(order))
+                .toList()
+            ).build();
     }
 }
