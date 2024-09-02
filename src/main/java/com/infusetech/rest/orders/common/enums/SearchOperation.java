@@ -45,4 +45,9 @@ public enum SearchOperation {
         // Retorna uma resposta com um status HTTP 400
        throw new IllegalArgumentException("Operação de busca '" + value + " 'inválida");
     }
+
+    @Override
+    public String toString() {
+        return operation;
+    }
 }

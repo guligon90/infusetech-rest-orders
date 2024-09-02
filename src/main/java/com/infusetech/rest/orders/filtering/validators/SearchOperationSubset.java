@@ -1,4 +1,4 @@
-package com.infusetech.rest.orders.common.enums.validators.specific;
+package com.infusetech.rest.orders.filtering.validators;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;

@@ -75,8 +75,7 @@ public class ApiResponse<T> {
             ApiResponse<T> apiResponse = new ApiResponse<>(this);
             
             return ResponseEntity
-                .status(apiResponse
-                .getHttpStatusCode())
+                .status(apiResponse.getHttpStatusCode())
                 .headers(apiResponse.getHttpHeaders())
                 .body(apiResponse);
         }

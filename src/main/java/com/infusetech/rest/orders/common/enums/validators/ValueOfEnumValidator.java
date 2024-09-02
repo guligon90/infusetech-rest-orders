@@ -1,4 +1,4 @@
-package com.infusetech.rest.orders.common.enums.validators.generic;
+package com.infusetech.rest.orders.common.enums.validators;
 
 import java.util.List;
 import java.util.stream.Collectors;

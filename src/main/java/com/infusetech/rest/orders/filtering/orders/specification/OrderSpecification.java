@@ -1,7 +1,7 @@
 package com.infusetech.rest.orders.filtering.orders.specification;
 
 import com.infusetech.rest.orders.common.enums.SearchOperation;
-import com.infusetech.rest.orders.common.filters.SearchCriteria;
+import com.infusetech.rest.orders.filtering.SearchCriteria;
 import com.infusetech.rest.orders.models.Order;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -22,10 +22,10 @@ public class OrderSpecification implements Specification<Order> {
 
     @Override
     public Predicate toPredicate(Root<Order> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
-
         String strToSearch = searchCriteria.getValue().toString().toLowerCase();
+        SearchOperation currentOperation = searchCriteria.getOperation();
 
-        switch(Objects.requireNonNull(SearchOperation.fromValue(searchCriteria.getOperation()))){
+        switch(Objects.requireNonNull(currentOperation)){
             case CONTAINS:
                 if(searchCriteria.getFilterKey().equals("nome")){
                     return cb.like(cb.lower(root.get(searchCriteria.getFilterKey())), "%" + strToSearch + "%");

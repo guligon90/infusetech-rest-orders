@@ -3,7 +3,8 @@ package com.infusetech.rest.orders.filtering.orders.dto;
 import java.util.List;
 
 import com.infusetech.rest.orders.common.enums.SearchOperation;
-import com.infusetech.rest.orders.common.filters.SearchCriteria;
+import com.infusetech.rest.orders.filtering.SearchCriteria;
+import com.infusetech.rest.orders.filtering.validators.SearchOperationSubset;
 
 import lombok.Data;
 import lombok.AllArgsConstructor;
@@ -15,6 +16,10 @@ import lombok.NoArgsConstructor;
 public class OrderSearchDTO {
     private List<SearchCriteria> searchCriteriaList;
     private List<OrderSearchSortingDTO> searchSortingCriteriaList;
-    private String dataOption;
-    private SearchOperation operation;
+
+    @SearchOperationSubset(anyOf = {
+        SearchOperation.ALL,
+        SearchOperation.ANY,
+    })
+    private SearchOperation dataOption;
 }

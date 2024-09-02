@@ -1,7 +1,7 @@
 package com.infusetech.rest.orders.filtering.orders.specification;
 
 import com.infusetech.rest.orders.common.enums.SearchOperation;
-import com.infusetech.rest.orders.common.filters.SearchCriteria;
+import com.infusetech.rest.orders.filtering.SearchCriteria;
 import com.infusetech.rest.orders.models.Order;
 
 import org.springframework.data.jpa.domain.Specification;
@@ -16,7 +16,7 @@ public class OrderSpecificationBuilder {
         this.params = new ArrayList<>();
     }
 
-    public final OrderSpecificationBuilder with(String key, String operation, Object value) {
+    public final OrderSpecificationBuilder with(String key, SearchOperation operation, Object value) {
         params.add(new SearchCriteria(key, operation, value));
         
         return this;
@@ -35,8 +35,9 @@ public class OrderSpecificationBuilder {
 
         for (int idx = 1; idx < params.size(); idx++){
             SearchCriteria criteria = params.get(idx);
-            
-            result = SearchOperation.fromValue(criteria.getDataOption()) == SearchOperation.ALL
+            SearchOperation dataOption = criteria.getDataOption();
+
+            result = dataOption == SearchOperation.ALL
                 ? Specification.where(result).and(new OrderSpecification(criteria))
                 : Specification.where(result).or(new OrderSpecification(criteria));
         }
