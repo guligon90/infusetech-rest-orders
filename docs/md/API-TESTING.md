@@ -13,7 +13,7 @@ Baseado nas especificações originais do projeto, foram construídos os seguint
 | ------------ |  --------------- | ------------------------------------------------------------------- | ---------------------- |
 | GET          | `/{id}`          | Retorna detalhes de um único pedido, dado um `id` válido.           | HTTP 200 OK            |
 | PUT          | `/{id}`          | Atualiza um pedido já existente, dado um `id` válido.               | HTTP 200 OK            |
-| DELETE       | `/{id}`          | Remove um pedido já existente, dado um `id` válido.                 | HTTP 203 NO_CONTENT    |
+| DELETE       | `/{id}`          | Remove um pedido já existente, dado um `id` válido.                 | HTTP 204 NO_CONTENT    |
 | POST         | `/`              | Cria um novo pedido, dada uma payload válida.                       | HTTP 201 CREATED       |
 | POST         | `/bulk`          | Possibilita a criação de pedidos em lote, dada uma payload válida.  | HTTP 201 CREATED       |
 | POST         | `/search`        | Realiza a listagem de pedidos, dado um conjunto válido de filtros.  | HTTP 200 OK            |
