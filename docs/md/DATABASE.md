@@ -17,6 +17,8 @@ infra/
 └── docker-compose.yml # Contém a declaração do serviço "database". Consome Dockerfile
 ```
 
+## Servidor MySQL
+
 Como o processo de build da imagem requer o argumento `$MYSQL_DATABASE`, essa variável de ambiente deve ser declarada antes do build. Para isso, basta executar no terminal, na raíz do projeto:
 
 ```bash
@@ -41,6 +43,18 @@ Após isso, o container Docker deverá estar em plena execução, pronto para co
 ```bash
 make ps
 ```
+
+## Ferramenta de consulta - *phpMyAdmin*
+
+De modo a conferir se os dados de pedidos estão sendo de fato alterados pela API REST, ou até mesmo para realizar intervenções diretamente no banco de dados, o serviço `phpmyadmin` foi criado para facilitar isso.
+Analogamente ao serviço `database`, para inciar o phpMyAdmin, basta executar no terminal:
+
+```bash
+make init c=phpmyadmin
+```
+
+> [!IMPORTANT]  
+> As variáveis de ambiente para este serviço estão declaradas em [./infra/docker/database/.phpmyadmin.env](../../infra/docker/database/.phpmyadmin.env).
 
 ---
 

@@ -11,24 +11,24 @@ Similarmente ao serviço `database`, a estrutura de declaração da imagem segue
 ```bash
 infra/
 └── docker
-    └── app
-        ├──.app.env # Variáveis de ambiente a serem consumidas pelo container
+    └── webservice
+        ├── .webservice.env # Variáveis de ambiente a serem consumidas pelo container
         ├── Dockerfile # Manifesto da imagem (em estágios, para build e execução do JAR)
         └── .dockerignore # Listagem de itens a serem ignorados pelo Docker Compose durante a build
 # ...
-└── docker-compose.yml # Contém a declaração do serviço "app". Consome Dockerfile.
+└── docker-compose.yml # Contém a declaração do serviço "webservice". Consome Dockerfile.
 ```
 
 Similarmente, podemos prosseguir fazend a build da respectiva imagem:
 
 ```bash
-make build c=app
+make build c=webservice
 ```
 
 Com a build finaliza, inicie o serviço e capture os logs de funcionamento através do comando:
 
 ```bash
-make init c=app
+make init c=webservice
 ```
 
 Após isso, o container Docker deverá estar em plena execução, pronto para conexões HTTP na porta **8080**. Você pode se certificar disso listando os conteieneres em funcionamento:

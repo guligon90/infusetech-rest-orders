@@ -39,10 +39,11 @@ Como ilustra o diagrama, a comunicação entre serviços do cluster via TCP/HTTP
 
 Segue abaixo uma listagem das assinaturas de URL, para as diferentes redes:
 
-| **Serviço** | **Descrição**                                            | **Protocolos** | **URL externa**          | **URL interna**     |
-| ----------- | -------------------------------------------------------- | -------------- | ------------------------ | ------------------- |
-| app         | Aplicação Spring Boot que fornece a API REST de pedidos  | TCP,HTTP       | <http://localhost:8080>  | <http://app:8080>   |
-| database    | Servidor de banco de dados relacional MySQL              | TCP            | tcp://localhost:3300     | tcp://database:3300 |
+| **Serviço** | **Descrição**                                            | **Protocolos** | **URL externa**          | **URL interna**            |
+| ----------- | -------------------------------------------------------- | -------------- | ------------------------ | -------------------------- |
+| webservice  | Aplicação Spring Boot que fornece a API REST de pedidos  | TCP,HTTP       | <http://localhost:8080>  | <http://webservice:8080>   |
+| phpmyadmin  | Ferramenta para manipulação do banco de dados MySQL      | TCP,HTTP       | <http://localhost:8090>  | <http://phpmyadmin:8090>   |
+| database    | Servidor de banco de dados relacional MySQL              | TCP            | tcp://localhost:3300     | tcp://database:3300        |
 
 > [!IMPORTANT]  
 > Concernindo as URLs supracitadas, as **externas** são classificadas assim pois são **externas à rede do Docker**, e.g. quando a aplicação Spring Boot está sendo rodada localmente na máquina.
