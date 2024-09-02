@@ -11,7 +11,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,9 +23,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.infusetech.rest.orders.common.api.ApiResponse;
 import com.infusetech.rest.orders.common.api.ResponseBuilder;
-import com.infusetech.rest.orders.common.filters.SearchCriteria;
+import com.infusetech.rest.orders.filtering.SearchCriteria;
 import com.infusetech.rest.orders.filtering.orders.dto.OrderSearchDTO;
 import com.infusetech.rest.orders.filtering.orders.specification.OrderSpecificationBuilder;
+import com.infusetech.rest.orders.models.dto.OrderBatchResponseDTO;
 import com.infusetech.rest.orders.models.dto.OrderCreateBulkDTO;
 import com.infusetech.rest.orders.models.dto.OrderCreateDTO;
 import com.infusetech.rest.orders.models.dto.OrderDTO;
@@ -37,10 +37,9 @@ import com.infusetech.rest.orders.services.OrderService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
-@Validated
 @RestController
 @RequestMapping("/order")
-@Tag(name = "order", description = "A API de pedidos")
+@Tag(name = "order", description = "API de pedidos")
 public class OrderController {
     @Autowired
     private OrderService orderService;
@@ -54,7 +53,10 @@ public class OrderController {
             );
     }
 
-    @Operation(summary = "Detalhes do pedido", description = "Método usado para obter detalhes de um pedido, dado um identificador válido.")
+    @Operation(
+        summary = "Detalhes do pedido",
+        description = "Método usado para obter detalhes de um pedido, dado um identificador válido."
+    )
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<OrderDTO>> findById(@PathVariable Long id) {
         OrderDTO result = this.orderService.findById(id);
@@ -66,7 +68,10 @@ public class OrderController {
         );
     }
 
-    @Operation(summary = "Remoção do pedido", description = "Método usado para remover um pedido, dado um identificador válido.")
+    @Operation(
+        summary = "Remoção do pedido",
+        description = "Método usado para remover um pedido, dado um identificador válido."
+    )
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Object>> delete(@PathVariable Long id) {
         this.orderService.delete(id);
@@ -78,7 +83,10 @@ public class OrderController {
         );
     }
 
-    @Operation(summary = "Listagem de pedidos", description = "Método usado para realizar a listagem de pedidos, dados parâmetros de paginação e filtros válidos.")
+    @Operation(
+        summary = "Listagem de pedidos",
+        description = "Método usado para realizar a listagem de pedidos, dados parâmetros de paginação e filtros válidos."
+    )
     @PostMapping("/search")
     public ResponseEntity<ApiResponse<List<OrderDTO>>> searchOrders(
         @RequestParam(name = "pageNum", defaultValue = "0") int pageNum,
@@ -105,7 +113,10 @@ public class OrderController {
         );
     }
 
-    @Operation(summary = "Criação de pedido", description = "Método usado para criar um novo pedido, dados parâmetros válidos.")
+    @Operation(
+        summary = "Criação de pedido",
+        description = "Método usado para criar um novo pedido, dados parâmetros válidos."
+    )
     @PostMapping
     public ResponseEntity<ApiResponse<Object>> create(
         @Valid @RequestBody OrderCreateDTO payload,
@@ -127,7 +138,10 @@ public class OrderController {
         );
     }
 
-    @Operation(summary = "Atualização de pedido", description = "Método usado para atualizar um pedido existente, dados um identificador e parâmetros válidos.")
+    @Operation(
+        summary = "Atualização de pedido",
+        description = "Método usado para atualizar um pedido existente, dados um identificador e parâmetros válidos."
+    )
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<Object>> update(
         @PathVariable Long id,
@@ -150,7 +164,10 @@ public class OrderController {
         );
     }
 
-    @Operation(summary = "Criação de pedidos em lote", description = "Método usado para criar vários pedidos, dada um lista de parâmetros válidos.")
+    @Operation(
+        summary = "Criação de pedidos em lote",
+        description = "Método usado para criar vários pedidos, dada um lista de parâmetros válidos."
+    )
     @PostMapping(
         path = "bulk",
         consumes = {
@@ -159,15 +176,20 @@ public class OrderController {
             MediaType.TEXT_XML_VALUE
         }
     )
-    public ResponseEntity<ApiResponse<List<OrderDTO>>> bulkCreate(
+    public ResponseEntity<ApiResponse<OrderBatchResponseDTO>> bulkCreate(
         @RequestBody OrderCreateBulkDTO payload
     ) {
-        List<OrderDTO> createdOrders = orderService.createOrdersInBulk(payload);
+        OrderBatchResponseDTO processedBatch = orderService.createOrdersInBulk(payload);
+        Boolean batchHasErrors = processedBatch.getErrors() != null;
 
-        return buildResponse(
-            HttpStatus.CREATED.value(),
-            "Pedidos criados",
-            createdOrders
-        );
+        String message = batchHasErrors
+            ? "Erros ao processar lote de pedidos"
+            : "Pedidos criados";
+
+        int statusCode = batchHasErrors
+            ? HttpStatus.BAD_REQUEST.value()
+            : HttpStatus.CREATED.value();
+
+        return buildResponse(statusCode, message, processedBatch);
     }
 }
